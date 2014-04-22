@@ -212,6 +212,8 @@ public final class LocationRequest implements Parcelable {
                 switch (criteria.getPowerRequirement()) {
                     case Criteria.POWER_HIGH:
                         quality = POWER_HIGH;
+                        /* DoPa (20140421) - add missing break statement (from CM11) */
+                        break;
                     default:
                         quality = POWER_LOW;
                 }
