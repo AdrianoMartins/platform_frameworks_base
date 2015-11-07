@@ -250,7 +250,7 @@ public abstract class WindowOrientationListener {
         // The minimum amount of time that must have elapsed since the screen was last touched
         // before the proposed rotation can change.
         protected static final long PROPOSAL_MIN_TIME_SINCE_TOUCH_END_NANOS =
-                500 * NANOS_PER_MS;
+                250 * NANOS_PER_MS;
 
         /**
          * Gets the proposed rotation.
