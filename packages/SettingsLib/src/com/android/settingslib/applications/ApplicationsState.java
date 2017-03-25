@@ -649,7 +649,11 @@ public class ApplicationsState {
             }
 
             if (comparator != null) {
-                Collections.sort(filteredApps, comparator);
+                synchronized (mEntriesMap) {
+                    // Locking to ensure that the background handler does not mutate
+                    // the size of AppEntries used for ordering while sorting.
+                    Collections.sort(filteredApps, comparator);
+                }
             }
 
             synchronized (mRebuildSync) {
@@ -1240,12 +1244,12 @@ public class ApplicationsState {
             }
             if (object1.info != null && object2.info != null) {
                 compareResult =
-                    sCollator.compare(object1.info.packageName, object2.info.packageName);
+                        sCollator.compare(object1.info.packageName, object2.info.packageName);
                 if (compareResult != 0) {
                     return compareResult;
                 }
             }
-            return object1.info.uid - object2.info.uid;
+            return (object1.info != null ? object1.info.uid : 0) - (object2.info != null ? object2.info.uid : 0);
         }
     };
 
@@ -1407,7 +1411,7 @@ public class ApplicationsState {
 
         public void init(Context context) {
             mHidePackageNames = context.getResources()
-                .getStringArray(R.array.config_hideWhenDisabled_packageNames);
+                    .getStringArray(R.array.config_hideWhenDisabled_packageNames);
         }
 
         @Override
@@ -1420,7 +1424,7 @@ public class ApplicationsState {
                 if (!entry.info.enabled) {
                     return false;
                 } else if (entry.info.enabledSetting ==
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED_UNTIL_USED) {
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED_UNTIL_USED) {
                     return false;
                 }
             }
